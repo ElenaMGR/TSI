@@ -5,5 +5,5 @@
     <include file="$(find turtlebot_gazebo)/launch/turtlebot_world.launch"/>
 
     <!-- Launch stopper node -->
-    <node name="random_walk" pkg="random_walk" type="random_walk" output="screen"/>
+    <node name="random_walk" pkg="random_walk" type="random_walk" args="0.5" output="screen"/>
 </launch>

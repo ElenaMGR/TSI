@@ -16,7 +16,7 @@ public:
     const static double MAX_SCAN_ANGLE = +30.0/180*M_PI;
     const static float MIN_DIST_FROM_OBSTACLE = 0.8; // Should be smaller than sensor_msgs::LaserScan::range_max
 
-    random_walk();
+    random_walk(float minDistance);
     void startMoving();
 
 private:
@@ -25,7 +25,10 @@ private:
     ros::Subscriber laserSub; // Subscriber to the robot's laser scan topic
     bool keepMoving; // Indicates whether the robot should continue moving
 
+    float minDistance = MIN_DIST_FROM_OBSTACLE;
+
     void moveForward();
+    void turn();
     void scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan);
 };
 

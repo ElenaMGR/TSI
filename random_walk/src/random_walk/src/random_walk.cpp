@@ -6,9 +6,10 @@
 #include "../include/random_walk.h"
 #include "geometry_msgs/Twist.h"
 
-random_walk::random_walk()
+random_walk::random_walk(float minDistance)
 {
     keepMoving = true;
+    this->minDistance = minDistance;
 
     // Advertise a new publisher for the robot's velocity command topic
     commandPub = node.advertise<geometry_msgs::Twist>("/cmd_vel_mux/input/teleop", 10);
@@ -24,6 +25,12 @@ void random_walk::moveForward() {
     commandPub.publish(msg);
 }
 
+void random_walk::turn() {
+	geometry_msgs::Twist msg;
+	msg.angular.z = MIN_SCAN_ANGLE;
+	commandPub.publish(msg);
+}
+
 // Process the incoming laser scan message
 void random_walk::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan)
 {
@@ -34,7 +41,7 @@ void random_walk::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan)
     int maxIndex = floor((MAX_SCAN_ANGLE - scan->angle_min) / scan->angle_increment);
 
     for (int currIndex = minIndex + 1; currIndex <= maxIndex; currIndex++) {
-        if (scan->ranges[currIndex] < MIN_DIST_FROM_OBSTACLE) {
+        if (scan->ranges[currIndex] < minDistance) {
         	isObstacleInFront = true;
             break;
         }
@@ -46,15 +53,19 @@ void random_walk::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan)
     }
 }
 
-void random_walk::startMoving()
-{
-    ros::Rate rate(10);
-    ROS_INFO("Start moving");
+void random_walk::startMoving(){
+   ros::Rate rate(10);
+   ROS_INFO("Start moving");
 
-    // Keep spinning loop until user presses Ctrl+C or the robot got too close to an obstacle
-    while (ros::ok() && keepMoving) {
-        moveForward();
-        ros::spinOnce(); // Need to call this function often to allow ROS to process incoming messages
-        rate.sleep();
-    }
+   // Keep spinning loop until user presses Ctrl+C or the robot got too close to an obstacle
+   while (ros::ok()) {
+      if (keepMoving)
+         moveForward();
+      else{
+         turn();
+         keepMoving = true;
+      }
+      ros::spinOnce(); // Need to call this function often to allow ROS to process incoming messages
+      rate.sleep();
+   }
 }
