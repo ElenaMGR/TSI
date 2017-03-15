@@ -1,0 +1,2 @@
+random_walk
+-DCATKIN_DEVEL_PREFIX=/home/elena/GradoInformatica/Tercero/2Cuatrimestre/TSI/Practicas/random_walk/devel -DCMAKE_INSTALL_PREFIX=/home/elena/GradoInformatica/Tercero/2Cuatrimestre/TSI/Practicas/random_walk/install -G Unix Makefiles
