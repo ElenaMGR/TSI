@@ -3,7 +3,7 @@
  * Author: Elena María Gómez Ríos
  */
 
-#include "random_walk.h"
+#include "../include/random_walk.h"
 #include "geometry_msgs/Twist.h"
 
 random_walk::random_walk()

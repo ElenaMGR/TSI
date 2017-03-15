@@ -3,7 +3,7 @@
  * Author: Elena María Gómez Ríos
  */
 
-#include "random_walk.h"
+#include "../include/random_walk.h"
 
 int main(int argc, char **argv) {
     // Initiate new ROS node named "stopper"

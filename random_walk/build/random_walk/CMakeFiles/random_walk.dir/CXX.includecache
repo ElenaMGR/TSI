@@ -6,21 +6,21 @@
 
 #IncludeRegexTransform: 
 
+/home/elena/GradoInformatica/Tercero/2Cuatrimestre/TSI/Practicas/random_walk/src/random_walk/include/random_walk.h
+ros/ros.h
+/home/elena/GradoInformatica/Tercero/2Cuatrimestre/TSI/Practicas/random_walk/src/random_walk/include/ros/ros.h
+sensor_msgs/LaserScan.h
+/home/elena/GradoInformatica/Tercero/2Cuatrimestre/TSI/Practicas/random_walk/src/random_walk/include/sensor_msgs/LaserScan.h
+
 /home/elena/GradoInformatica/Tercero/2Cuatrimestre/TSI/Practicas/random_walk/src/random_walk/src/random_walk.cpp
-random_walk.h
-/home/elena/GradoInformatica/Tercero/2Cuatrimestre/TSI/Practicas/random_walk/src/random_walk/src/random_walk.h
+../include/random_walk.h
+/home/elena/GradoInformatica/Tercero/2Cuatrimestre/TSI/Practicas/random_walk/src/random_walk/include/random_walk.h
 geometry_msgs/Twist.h
 /home/elena/GradoInformatica/Tercero/2Cuatrimestre/TSI/Practicas/random_walk/src/random_walk/src/geometry_msgs/Twist.h
 
-/home/elena/GradoInformatica/Tercero/2Cuatrimestre/TSI/Practicas/random_walk/src/random_walk/src/random_walk.h
-ros/ros.h
-/home/elena/GradoInformatica/Tercero/2Cuatrimestre/TSI/Practicas/random_walk/src/random_walk/src/ros/ros.h
-sensor_msgs/LaserScan.h
-/home/elena/GradoInformatica/Tercero/2Cuatrimestre/TSI/Practicas/random_walk/src/random_walk/src/sensor_msgs/LaserScan.h
-
 /home/elena/GradoInformatica/Tercero/2Cuatrimestre/TSI/Practicas/random_walk/src/random_walk/src/run_random_walk.cpp
-random_walk.h
-/home/elena/GradoInformatica/Tercero/2Cuatrimestre/TSI/Practicas/random_walk/src/random_walk/src/random_walk.h
+../include/random_walk.h
+/home/elena/GradoInformatica/Tercero/2Cuatrimestre/TSI/Practicas/random_walk/src/random_walk/include/random_walk.h
 
 /opt/ros/kinetic/include/geometry_msgs/Twist.h
 string
