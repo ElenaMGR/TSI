@@ -25,9 +25,12 @@ void random_walk::moveForward() {
     commandPub.publish(msg);
 }
 
-void random_walk::turn() {
+void random_walk::turn(bool direccion) {
 	geometry_msgs::Twist msg;
-	msg.angular.z = MIN_SCAN_ANGLE;
+   if (direccion)
+      msg.angular.z = MIN_SCAN_ANGLE;
+   else
+	  msg.angular.z = -MIN_SCAN_ANGLE;
 	commandPub.publish(msg);
 }
 
@@ -35,22 +38,44 @@ void random_walk::turn() {
 void random_walk::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan)
 {
 	bool isObstacleInFront = false;
+   bool giro = false;
+   int contIzq = 0, contDch = 0;
 
     // Find the closest range between the defined minimum and maximum angles
     int minIndex = ceil((MIN_SCAN_ANGLE - scan->angle_min) / scan->angle_increment);
     int maxIndex = floor((MAX_SCAN_ANGLE - scan->angle_min) / scan->angle_increment);
+    int media = ( maxIndex - minIndex - 1) / 2;
 
     for (int currIndex = minIndex + 1; currIndex <= maxIndex; currIndex++) {
-        if (scan->ranges[currIndex] < minDistance) {
-        	isObstacleInFront = true;
-            break;
-        }
+       if (scan->ranges[currIndex] < minDistance) {
+        	 isObstacleInFront = true;
+          if (currIndex < media )
+            contIzq += 1;
+          else
+            contDch += 1;
+          break;
+       }
     }
 
+
     if (isObstacleInFront) {
-        ROS_INFO("Stop!");
-        keepMoving = false;
+      ROS_INFO("Giro!");
+      keepMoving = false;
+
+      if (contIzq < contDch)
+        dir = true;
+      else if (contDch < contIzq)
+        dir = false;
+      else{
+        if (rand()%2==1)
+           dir = true;
+        else
+           dir = false;
+      }
     }
+    else{
+      keepMoving = true;
+   }
 }
 
 void random_walk::startMoving(){
@@ -59,13 +84,16 @@ void random_walk::startMoving(){
 
    // Keep spinning loop until user presses Ctrl+C or the robot got too close to an obstacle
    while (ros::ok()) {
-      if (keepMoving)
+      while (ros::ok() && keepMoving){
          moveForward();
-      else{
-         turn();
-         keepMoving = true;
+         ros::spinOnce(); // Need to call this function often to allow ROS to process incoming messages
+         rate.sleep();
       }
-      ros::spinOnce(); // Need to call this function often to allow ROS to process incoming messages
-      rate.sleep();
+      while (ros::ok() && !keepMoving){
+         turn(dir);
+         //keepMoving = true;
+         ros::spinOnce(); // Need to call this function often to allow ROS to process incoming messages
+         rate.sleep();
+      }
    }
 }

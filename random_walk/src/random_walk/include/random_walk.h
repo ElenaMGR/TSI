@@ -26,9 +26,10 @@ private:
     bool keepMoving; // Indicates whether the robot should continue moving
 
     float minDistance = MIN_DIST_FROM_OBSTACLE;
+    bool dir;
 
     void moveForward();
-    void turn();
+    void turn(bool direccion); // 0 izquierda, 1 dereccha
     void scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan);
 };
 
