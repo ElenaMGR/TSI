@@ -7,9 +7,8 @@
 #include "geometry_msgs/Twist.h"
 
 random_walk::random_walk(float minDistance) {
-   keepMoving = true;
    this->minDistance = minDistance;
-
+   estargirando = true;
    // Advertise a new publisher for the robot's velocity command topic
    commandPub = node.advertise<geometry_msgs::Twist>("/cmd_vel_mux/input/teleop", 10);
 
@@ -77,17 +76,25 @@ void random_walk::startMoving() {
    while (ros::ok()) {
       if (turnTime > 0){
          turnTime--;
-      }else if (!isObstacleInFront){
-         moveForward();
-         ROS_INFO("Avanzo");
-      }else if(minIzq>minDch){
-         turn(false);
-         turnTime = 10;
-         ROS_INFO("Giro Izquierda");
-      }else{
-         turn(true);
-         turnTime = 10;
-         ROS_INFO("Giro Derecha");
+      }else {
+         if (!isObstacleInFront){
+            estargirando = true;
+            moveForward();
+            ROS_INFO("Avanzo");
+         }else {
+            if(minIzq>minDch && estargirando){
+               estargirando = false;
+               giro = false;
+               turnTime = 10;
+               ROS_INFO("Giro Izquierda");
+            }else if(estargirando){
+               estargirando = false;
+               giro=true;
+               turnTime = 10;
+               ROS_INFO("Giro Derecha");
+            }
+            turn(giro);
+         }
       }
 
       ros::spinOnce(); // Need to call this function often to allow ROS to process incoming messages

@@ -1,0 +1,37 @@
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[vmargin=2.5cm,hmargin=2.5cm]{geometry}
+\usepackage{enumerate}
+\usepackage{algpseudocode}
+
+\title{Práctica	1: Robótica \\
+Entrega	1: Robot deambulador con ROS y Gazebo}
+
+\author{ Elena María Gómez Ríos }
+
+
+\begin{document}
+
+\maketitle
+
+\section{Análisis del problema}
+La tarea principal de esta práctica es crear un nodo ROS que dirigirá el robot por el entorno simulado de Gazebo siguiendo un algoritmo básico de navegación aleatoria o deambulación, similar al que sigue una aspiradora robot. El robot se moverá hacia adelante hasta que se encuentre cerca de un obstáculo, entonces rotará por un tiempo aleatorio y volverá a moverse hacia adelante. La dirección de la rotación estará determinada por la zona en la que el robot vea que hay menos obstáculos.
+
+\section{Descripción de la solución planteada}
+Para implementar el comportamiento descrito arriba me he basado en el nodo \texttt{Stopper} de la sesión de prácticas.\\
+
+La base principal del programa es la siguiente:
+
+
+\begin{algorithmic}
+\If {$i\geq maxval$}
+    \State $i\gets 0$
+\ElsIf {$i+k\leq maxval$}
+        \State $i\gets i+k$
+\EndIf
+\end{algorithmic}
+
+
+\end{document}
