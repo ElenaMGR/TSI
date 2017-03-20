@@ -29,7 +29,7 @@ private:
     bool dir;
     int minIzq, minDch;
     bool isObstacleInFront = false;
-    int turnTime = 0;
+    int turnTime = 10;
 
     void moveForward();
     void turn(bool direccion); // 0 izquierda, 1 dereccha
