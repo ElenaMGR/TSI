@@ -27,6 +27,9 @@ private:
 
     float minDistance = MIN_DIST_FROM_OBSTACLE;
     bool dir;
+    int minIzq, minDch;
+    bool isObstacleInFront = false;
+    int turnTime = 0;
 
     void moveForward();
     void turn(bool direccion); // 0 izquierda, 1 dereccha

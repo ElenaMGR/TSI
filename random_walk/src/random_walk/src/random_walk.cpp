@@ -22,25 +22,24 @@ random_walk::random_walk(float minDistance)
 void random_walk::moveForward() {
     geometry_msgs::Twist msg; // The default constructor will set all commands to 0
     msg.linear.x = FORWARD_SPEED;
+    msg.angular.z = 0;
     commandPub.publish(msg);
 }
 
 void random_walk::turn(bool direccion) {
 	geometry_msgs::Twist msg;
-   if (direccion)
-      msg.angular.z = MIN_SCAN_ANGLE;
+   msg.linear.x = 0;
+   if (!direccion)
+      msg.angular.z = FORWARD_SPEED;
    else
-	  msg.angular.z = -MIN_SCAN_ANGLE;
+	  msg.angular.z = -FORWARD_SPEED;
 	commandPub.publish(msg);
 }
 
 // Process the incoming laser scan message
 void random_walk::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan)
 {
-	bool isObstacleInFront = false;
-   bool giro = false;
-   int contIzq = 0, contDch = 0;
-
+   isObstacleInFront = false;
     // Find the closest range between the defined minimum and maximum angles
     int minIndex = ceil((MIN_SCAN_ANGLE - scan->angle_min) / scan->angle_increment);
     int maxIndex = floor((MAX_SCAN_ANGLE - scan->angle_min) / scan->angle_increment);
@@ -49,33 +48,29 @@ void random_walk::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan)
     for (int currIndex = minIndex + 1; currIndex <= maxIndex; currIndex++) {
        if (scan->ranges[currIndex] < minDistance) {
         	 isObstacleInFront = true;
-          if (currIndex < media )
-            contIzq += 1;
-          else
-            contDch += 1;
           break;
        }
     }
 
-
-    if (isObstacleInFront) {
-      ROS_INFO("Giro!");
-      keepMoving = false;
-
-      if (contIzq < contDch)
-        dir = true;
-      else if (contDch < contIzq)
-        dir = false;
-      else{
-        if (rand()%2==1)
-           dir = true;
-        else
-           dir = false;
-      }
+    double minimo = 10;
+    for (int currIndex = 0; currIndex <= scan->ranges.size()/3; currIndex++) {
+       if (scan->ranges[currIndex] < minimo) {
+        	 minimo = scan->ranges[currIndex];
+       }
     }
-    else{
-      keepMoving = true;
-   }
+
+    minDch = minimo;
+
+    minimo = 10;
+    for (int currIndex = scan->ranges.size()*2/3; currIndex <= scan->ranges.size()-1; currIndex++) {
+       if (scan->ranges[currIndex] < minimo) {
+        	 minimo = scan->ranges[currIndex];
+       }
+    }
+
+    minIzq = minimo;
+
+
 }
 
 void random_walk::startMoving(){
@@ -84,16 +79,21 @@ void random_walk::startMoving(){
 
    // Keep spinning loop until user presses Ctrl+C or the robot got too close to an obstacle
    while (ros::ok()) {
-      while (ros::ok() && keepMoving){
+      if (turnTime > 0){
+         turnTime--;
+         ROS_INFO("Cuenta %d", turnTime);
+      }else if (!isObstacleInFront){
          moveForward();
-         ros::spinOnce(); // Need to call this function often to allow ROS to process incoming messages
-         rate.sleep();
+         ROS_INFO("Avanzo");
+      }else if(minIzq>minDch){
+         turn(false);
+         turnTime = 10;
+      }else{
+         turn(true);
+         turnTime = 10;
       }
-      while (ros::ok() && !keepMoving){
-         turn(dir);
-         //keepMoving = true;
-         ros::spinOnce(); // Need to call this function often to allow ROS to process incoming messages
-         rate.sleep();
-      }
+
+      ros::spinOnce(); // Need to call this function often to allow ROS to process incoming messages
+      rate.sleep();
    }
 }
