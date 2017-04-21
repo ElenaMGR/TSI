@@ -1,0 +1,8 @@
+prefix=/home/elena/GradoInformatica/Tercero/2Cuatrimestre/TSI/Practicas/P1Entrega2/install
+
+Name: explorador_fronteras
+Description: Description of explorador_fronteras
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/elena/GradoInformatica/Tercero/2Cuatrimestre/TSI/Practicas/P1Entrega2/install/lib 
+Requires: 

@@ -1,0 +1,2 @@
+explorador_fronteras
+-DCATKIN_DEVEL_PREFIX=/home/elena/GradoInformatica/Tercero/2Cuatrimestre/TSI/Practicas/P1Entrega2/devel -DCMAKE_INSTALL_PREFIX=/home/elena/GradoInformatica/Tercero/2Cuatrimestre/TSI/Practicas/P1Entrega2/install -G Unix Makefiles

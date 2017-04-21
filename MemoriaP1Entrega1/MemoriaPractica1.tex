@@ -17,21 +17,61 @@ Entrega	1: Robot deambulador con ROS y Gazebo}
 \maketitle
 
 \section{Análisis del problema}
-La tarea principal de esta práctica es crear un nodo ROS que dirigirá el robot por el entorno simulado de Gazebo siguiendo un algoritmo básico de navegación aleatoria o deambulación, similar al que sigue una aspiradora robot. El robot se moverá hacia adelante hasta que se encuentre cerca de un obstáculo, entonces rotará por un tiempo aleatorio y volverá a moverse hacia adelante. La dirección de la rotación estará determinada por la zona en la que el robot vea que hay menos obstáculos.
+La tarea principal de esta práctica es crear un nodo ROS que dirigirá el robot por el entorno simulado de Gazebo siguiendo un algoritmo básico de navegación aleatoria o deambulación, similar al que sigue una aspiradora robot. El robot se moverá hacia adelante hasta que se encuentre cerca de un obstáculo, entonces rotará para evitar el obstáculo y volverá a moverse hacia adelante. La dirección de la rotación estará determinada por la zona en la que el robot vea que hay menos obstáculos.\\
+
+Para calcular la dirección de rotación del robot cuando encuentra un obstáculo obtengo las distancias mínimas del sensor, despreciando la zona central, y calculo la máxima entre la zona de la izquierda y la derecha. El robot rotará, por tanto, hacia la zona con el mayor de estos valores.
 
 \section{Descripción de la solución planteada}
-Para implementar el comportamiento descrito arriba me he basado en el nodo \texttt{Stopper} de la sesión de prácticas.\\
+Para implementar el comportamiento descrito arriba me he basado en el nodo \texttt{Stopper} proporcionado por los profesores para la sesión de prácticas.\\
 
 La base principal del programa es la siguiente:
 
+\begin{itemize}
+\item \textbf{startMoving()}
+
+Este método se ejecuta en bucle controlando el movimiento del robot. Si no hay un objeto delante el robot sigue avanzando y si hay un objeto delante evalúa cual es la mayor distancia entre las distancias mínimas calculadas para determinar si gira hacia la derecha o izquierda.\\
 
 \begin{algorithmic}
-\If {$i\geq maxval$}
-    \State $i\gets 0$
-\ElsIf {$i+k\leq maxval$}
-        \State $i\gets i+k$
-\EndIf
+\While {ros::ok()}
+	\If {turnTime $> 0$}
+    	\State turnTime \-- \--
+	\Else
+		\If{no hay obstáculos}		
+        	\State moveForward() //Avanzo hacia adelante
+        	\State puedeGirar = true
+        \Else
+        	\If{mínimo izquierda $>$ mínimo derecha \textbf{and} puedeGirar}
+        		\State puedeGirar = false
+        		\State turnTime = 10
+        		\State giro = false //Indica que gira hacia la izquierda
+        	\ElsIf{puedeGirar}
+        		\State puedeGirar = false
+        		\State turnTime = 10
+        		\State giro = true //Indica que gira hacia la derecha
+        	\EndIf
+        	\State turn(giro)
+		\EndIf
+	\EndIf
+	\State ros::spinOnce()
+    \State rate.sleep()
+\EndWhile
 \end{algorithmic}
+
+\item \textbf{scanCallback()}
+
+En este método se obtienen los valores del láser con los que analizamos la situación del robot. Si encuentra un obstáculo a una distancia menor que la distancia indicada en el \texttt{launch} el robot se parará y se guarda en una variable el estado. También se obtienen los valores mínimos de las distancias del láser los cuales se utilizan para determinar el giro.
+
+\item \textbf{moveForward()}
+
+Con este método se le indica al robot que se mueva hacia delante y que no gire.
+
+\item \textbf{turn()}
+
+Este método recibe un parámetro que determina el sentido del giro, \texttt{true} quiere decir que gira hacia la derecha y \texttt{false} hacia la izquierda. Mientras realiza el giro el robot no se mueve.
+
+
+
+\end{itemize}
 
 
 \end{document}
