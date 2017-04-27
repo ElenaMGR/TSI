@@ -1,0 +1,2 @@
+my_astar_planner
+-DCATKIN_DEVEL_PREFIX=/home/elena/GradoInformatica/Tercero/2Cuatrimestre/TSI/Practicas/practica2/devel -DCMAKE_INSTALL_PREFIX=/home/elena/GradoInformatica/Tercero/2Cuatrimestre/TSI/Practicas/practica2/install -G Unix Makefiles
