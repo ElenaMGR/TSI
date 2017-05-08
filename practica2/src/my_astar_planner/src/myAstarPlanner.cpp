@@ -102,6 +102,26 @@ namespace myastar_planner {
       //check if the footprint is legal
       //double footprint_cost = world_model_->footprintCost(x_i, y_i, theta_i, footprint);
       //return footprint_cost;
+
+      double x,y;
+      unsigned int mx, my;
+      int n_no_free = 0;
+
+      //Recorremos las celdas en las que toca el borde del footprint del robot centrado en el punto que le pasamos
+      for (int i = 0; i < footprint.size(); i++) {
+         x = x_i + (footprint.at(i).x*cos(theta_i) - footprint.at(i).y*sin(theta_i));
+         y = y_i + (footprint.at(i).x*sin(theta_i) + footprint.at(i).y*cos(theta_i));
+         costmap_->worldToMap(x,y,mx, my);
+
+         //Vemos si es un obstaculo o una posicion peligrosa
+         if(costmap_->getCost(mx,my) == costmap_2d::LETHAL_OBSTACLE)
+            return 999999999;
+         else if (costmap_->getCost(mx,my) == costmap_2d::INSCRIBED_INFLATED_OBSTACLE)
+         n_no_free++;
+      }
+
+      double cte = 1.0; //TODO
+      return cte*n_no_free;
    }
 
 
@@ -170,6 +190,7 @@ namespace myastar_planner {
       cpstart.parent =cpstart.index;
       cpstart.gCost = 0;
       cpstart.hCost = MyastarPlanner::calculateHCost(cpstart.index,cpgoal.index);
+      cpstart.fCost = cpstart.gCost + cpstart.hCost;
 
       //insertamos la casilla inicial en abiertos
       MyastarPlanner::openList.push_back(cpstart);
@@ -319,8 +340,9 @@ namespace myastar_planner {
 
 
          //add the neighbors that are not in the open list to the open list and mark the current cell as their parent
+         addNeighborCellsToOpenList(openList, neighborsNotInOpenList, currentIndex, COfCells.gCost, cpgoal.index); //,tBreak);
 
-         addNeighborCellsToOpenList(openList, neighborsNotInOpenList, currentIndex, cpstart.gCost, cpgoal.index); //,tBreak);
+         openList.sort(compareFCost);
 
          explorados++;
 
@@ -415,6 +437,27 @@ namespace myastar_planner {
    }
 
 
+   bool MyastarPlanner::cercaObjeto(unsigned int CellID){
+      unsigned int mx, my;
+      double  wx, wy;
+      costmap_->indexToCells(CellID,mx,my);
+
+      for (int x=-3;x<=3;x++)
+         for (int y=-3; y<=3;y++){
+            //check whether the index is valid
+            //ROS_INFO("A ver: X = %u, Size_X = %u, Y = %u Size_Y = %u",mx+x, (unsigned int)costmap_->getSizeInCellsX(),my+y, (unsigned int)costmap_->getSizeInCellsY());
+            if ((mx+x>=0)&&(mx+x < costmap_->getSizeInCellsX())&&(my+y >=0 )&&(my+y < costmap_->getSizeInCellsY())){
+               costmap_->mapToWorld( (unsigned int) mx+x, (unsigned int) my+y, wx, wy);
+
+               //ROS_INFO("Comprobando casilla con Map coords(%u,%u), World coords (%f,%f)", mx+x, my+y ,wx,wy);
+               if(costmap_->getCost(mx+x,my+y) > 127   && (!(x==0 && y==0))){
+                  return true;
+               }
+            }
+
+         }
+         return  false;
+   }
    /*******************************************************************************/
    //Function Name: isContains
    //Inputs: the list, the cellID
@@ -443,11 +486,16 @@ namespace myastar_planner {
    void MyastarPlanner::addNeighborCellsToOpenList(list<coupleOfCells> & OPL, vector <unsigned int> neighborCells, unsigned int parent, float gCostParent, unsigned int goalCell){ //,float tBreak)
       vector <coupleOfCells> neighborsCellsOrdered;
       for(uint i=0; i< neighborCells.size(); i++){
-         coupleOfCells CP;
-         CP.index=neighborCells[i]; //insert the neighbor cell
-         CP.parent=parent; //insert the parent cell
+         if (!cercaObjeto(neighborCells[i])){
+            coupleOfCells CP;
+            CP.index=neighborCells[i]; //insert the neighbor cell
+            CP.parent=parent; //insert the parent cell
 
-         OPL.push_back(CP);
+            CP.gCost = gCostParent + getMoveCost(parent, neighborCells[i]);
+            CP.hCost = getMoveCost(neighborCells[i], goalCell);
+            CP.fCost = CP.gCost + CP.hCost;
+            OPL.push_back(CP);
+         }
       }
    }
 

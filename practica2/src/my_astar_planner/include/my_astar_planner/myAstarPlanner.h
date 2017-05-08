@@ -123,7 +123,6 @@ namespace myastar_planner{
          //para publicar el plan
          ros::Publisher plan_pub_;
 
-
          //necesarios para manejar las listas de abiertos y cerrados de astar.
          list<coupleOfCells> openList; //!< the open list: it contains all the expanded cells (current cells)
          list<coupleOfCells> closedList; //!< the closed list: contains the explored cells
@@ -150,6 +149,8 @@ namespace myastar_planner{
 
          //devuelve celdas adyacentes a CellID que estén libres
          vector <unsigned int> findFreeNeighborCell (unsigned int CellID);
+
+         bool cercaObjeto(unsigned int CellID);
 
          /*******************************************************************************/
          //Function Name: addNeighborCellsToOpenList
