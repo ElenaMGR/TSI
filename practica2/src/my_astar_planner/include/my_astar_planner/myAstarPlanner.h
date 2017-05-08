@@ -152,6 +152,8 @@ namespace myastar_planner{
 
          bool cercaObjeto(unsigned int CellID);
 
+         void modificarGCost(unsigned int CellID, coupleOfCells COfCells);
+
          /*******************************************************************************/
          //Function Name: addNeighborCellsToOpenList
          //Inputs: the open list, the neighbors Cells and the parent Cell

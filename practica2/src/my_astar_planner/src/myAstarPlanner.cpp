@@ -223,9 +223,12 @@ namespace myastar_planner {
       unsigned int explorados = 0;
       unsigned int currentIndex = cpstart.index;
 
-      while (!MyastarPlanner::openList.empty()){ //while the open list is not empty continuie the search
+      coupleOfCells nodoError;
+
+      while (!MyastarPlanner::openList.empty() && explorados < 12000){ //while the open list is not empty continuie the search
          //escoger UNA casilla DE abiertos
          coupleOfCells COfCells= openList.front();
+         nodoError = COfCells;
          openList.pop_front();
          currentIndex=COfCells.index;
 
@@ -263,8 +266,11 @@ namespace myastar_planner {
             unsigned int currentParent = COfCells.parent;
             ROS_INFO("Inserta en Plan GOAL: %f, %f PADRE: %u", pose.pose.position.x, pose.pose.position.y, currentParent);
             //ros::Duration(1).sleep();
-
+            int nodosExpandidos = 0;
+            ros::Time ini = ros::Time::now();
             while (currentParent != cpstart.index) { //e.d. mientras no lleguemos al nodo start
+
+               nodosExpandidos++;
                //encontramos la posición de currentParent en cerrados
                list<coupleOfCells>::iterator it=getPositionInList(closedList,currentParent);
 
@@ -304,7 +310,16 @@ namespace myastar_planner {
                ROS_INFO("Inserta en Plan: %f, %f", pose.pose.position.x, pose.pose.position.y);
                //hacemos que currentParent sea el parent de currentCouple
                currentParent = (*it).parent;
+
+
+
             }
+
+            ros::Time end = ros::Time::now();
+            ROS_INFO("Tiempo de ejecución %lf", end.toSec() - ini.toSec());
+            ROS_INFO("Espacio camino %lf", COfCells.fCost);
+            ROS_INFO("Nodos del camino %i", nodosExpandidos);
+            ROS_INFO("Nodos abiertos %i", explorados);
 
             ROS_INFO("Sale del bucle de generación del plan.");
             std::reverse(plan.begin(),plan.end());
@@ -324,6 +339,8 @@ namespace myastar_planner {
          for(uint i=0; i<neighborCells.size(); i++){
             if(!isContains(closedList,neighborCells[i])){
                neighborNotInClosedList.push_back(neighborCells[i]);
+            }else{
+               modificarGCost(neighborCells[i], COfCells);
             }
          }
          ROS_INFO("Ha encontrado %u vecinos que no están en cerrados", (unsigned int)neighborNotInClosedList.size());
@@ -332,9 +349,16 @@ namespace myastar_planner {
          vector <unsigned int> neighborsInOpenList;
          vector <unsigned int> neighborsNotInOpenList;
          for(uint i=0; i<neighborNotInClosedList.size(); i++){
-            if(isContains(openList,neighborNotInClosedList[i]))
+            if(isContains(openList,neighborNotInClosedList[i])){
+               list<coupleOfCells>::iterator itAnt = getPositionInList(openList, neighborNotInClosedList[i]);
+               double nuevoGCost = COfCells.gCost + getMoveCost(COfCells.index, neighborNotInClosedList[i]);
+               if (nuevoGCost < itAnt->gCost ){
+                  itAnt->parent = COfCells.index;
+                  itAnt->gCost = nuevoGCost;
+                  itAnt->fCost = itAnt->gCost + itAnt->hCost;
+               }
                neighborsInOpenList.push_back(neighborNotInClosedList[i]);
-            else
+            }else
                neighborsNotInOpenList.push_back(neighborNotInClosedList[i]);
          }
 
@@ -355,6 +379,99 @@ namespace myastar_planner {
 
       }
 
+      if(explorados > 1){
+         //el plan lo construimos partiendo del goal, del parent del goal y saltando en cerrados "de parent en parent"
+         //vamos insertando al final los waypoints (los nodos de cerrados), por tanto, cuando finaliza el bucle hay que darle la vuelta al plan
+         ROS_INFO("Se han explorado %u nodos y cerrados tiene %u nodos", explorados, (unsigned int)closedList.size());
+         //ros::Duration(10).sleep();
+         //convertimos goal a poseStamped nueva
+         unsigned int mpose_x, mpose_y;
+         double wpose_x, wpose_y;
+
+         costmap_->indexToCells(nodoError.index, mpose_x, mpose_y);
+         costmap_->mapToWorld(mpose_x, mpose_y, wpose_x, wpose_y);
+         geometry_msgs::PoseStamped pose;
+         pose.header.stamp =  ros::Time::now();
+         pose.header.frame_id = goal.header.frame_id;//debe tener el mismo frame que el de la entrada
+         pose.pose.position.x = wpose_x;
+         pose.pose.position.y = wpose_y;
+         pose.pose.position.z = 0.0;
+         pose.pose.orientation.x = 0.0;
+         pose.pose.orientation.y = 0.0;
+         pose.pose.orientation.z = 0.0;
+         pose.pose.orientation.w = 1.0;
+
+         //lo añadimos al plan
+         plan.push_back(pose);
+
+         coupleOfCells currentCouple = nodoError;
+         unsigned int currentParent = nodoError.parent;
+         ROS_INFO("Inserta en Plan GOAL: %f, %f PADRE: %u", pose.pose.position.x, pose.pose.position.y, currentParent);
+         //ros::Duration(1).sleep();
+         int nodosExpandidos = 0;
+         ros::Time ini = ros::Time::now();
+         while (currentParent != cpstart.index) { //e.d. mientras no lleguemos al nodo start
+
+            nodosExpandidos++;
+            //encontramos la posición de currentParent en cerrados
+            list<coupleOfCells>::iterator it=getPositionInList(closedList,currentParent);
+
+            //hacemos esa posición que sea el currentCouple
+            coupleOfCells currentCouple;
+            currentCouple.index=currentParent;
+            currentCouple.parent=(*it).parent;
+            currentCouple.gCost=(*it).gCost;
+            currentCouple.hCost=(*it).hCost;
+            currentCouple.fCost=(*it).fCost;
+
+            //creamos una PoseStamped con la informaciuón de currentCouple.index
+
+            //primero hay que convertir el currentCouple.index a world coordinates
+            unsigned int mpose_x, mpose_y;
+            double wpose_x, wpose_y;
+
+            costmap_->indexToCells((*it).index, mpose_x, mpose_y);
+            costmap_->mapToWorld(mpose_x, mpose_y, wpose_x, wpose_y);
+
+            ROS_INFO("Las coordenadas de El PADRE de %u son (%u, %u) -> (%f, %f). Y su PADRE es %u.", currentParent, mpose_x,mpose_y,wpose_x, wpose_y, (*it).parent);
+            //ros::Duration(1).sleep();
+
+            //después creamos la pose
+            geometry_msgs::PoseStamped pose;
+            pose.header.stamp =  ros::Time::now();
+            pose.header.frame_id = goal.header.frame_id;//debe tener el mismo frame que el de la entrada
+            pose.pose.position.x = wpose_x;
+            pose.pose.position.y = wpose_y;
+            pose.pose.position.z = 0.0;
+            pose.pose.orientation.x = 0.0;
+            pose.pose.orientation.y = 0.0;
+            pose.pose.orientation.z = 0.0;
+            pose.pose.orientation.w = 1.0;
+            //insertamos la pose en el plan
+            plan.push_back(pose);
+            ROS_INFO("Inserta en Plan: %f, %f", pose.pose.position.x, pose.pose.position.y);
+            //hacemos que currentParent sea el parent de currentCouple
+            currentParent = (*it).parent;
+
+
+         }
+
+         ros::Time end = ros::Time::now();
+         ROS_INFO("Tiempo de ejecución %lf", end.toSec() - ini.toSec());
+         ROS_INFO("Espacio camino %lf", nodoError.fCost);
+         ROS_INFO("Nodos del camino %i", nodosExpandidos);
+         ROS_INFO("Nodos abiertos %i", explorados);
+
+         ROS_INFO("Sale del bucle de generación del plan.");
+         std::reverse(plan.begin(),plan.end());
+
+         //lo publica en el topic "planTotal"
+         publishPlan(plan);
+         return true;
+      }
+
+
+
       if(openList.empty()) {  // if the openList is empty: then failure to find a path
          ROS_INFO("Failure to find a path !");
          return false;
@@ -362,6 +479,23 @@ namespace myastar_planner {
       }
 
    };
+
+   void MyastarPlanner::modificarGCost(unsigned int CellID, coupleOfCells COfCells){
+      list<coupleOfCells>::iterator itAnt = getPositionInList(closedList, CellID);
+      double nuevoGCost = COfCells.gCost + getMoveCost(COfCells.index, CellID);
+      if (nuevoGCost < itAnt->gCost ){
+         itAnt->parent = COfCells.index;
+         itAnt->gCost = nuevoGCost;
+         itAnt->fCost = itAnt->gCost + itAnt->hCost;
+
+         list<coupleOfCells>::iterator it = closedList.begin();
+         for (it; it!= closedList.end(); it++){
+            if (it->parent == CellID){
+               modificarGCost(it->index, *itAnt);
+            }
+         }
+      }
+   }
 
 
    //calculamos H como la distancia euclídea hasta el goal
