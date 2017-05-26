@@ -1,0 +1,1 @@
+wine htnp.exe -p problema-zeno-0.pddl -d zenotravel-V00.pddl -o kk.txt

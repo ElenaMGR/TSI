@@ -5,7 +5,9 @@
 			   box1 - box
 			   bananas1 - banana)
     (:init
-
-	      (onbox monkey1 p2)
+         (at monkey1 p1)
+	      (on-floor monkey1)
+         (at box1 p2)
+         (at bananas1 p3)
 	 )
     (:goal (AND (hasbananas monkey1))))
