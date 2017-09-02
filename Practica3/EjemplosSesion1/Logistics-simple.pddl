@@ -7,7 +7,7 @@
 	(:predicates 	(at ?x - physobj ?l - city)
 			(in ?x - obj ?t - vehicle)
 			(connected ?city1 ?city2 - city))
-			
+
 	(:action drive-truck
 	:parameters (?truck - truck ?city1 ?city2 - city)
 	:precondition (and  (at ?truck ?city1)
@@ -20,6 +20,6 @@
 				         (at ?x ?city2))
 		           )
 			)
-		    )
+		   )
     )
 )
