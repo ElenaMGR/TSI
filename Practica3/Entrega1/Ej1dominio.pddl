@@ -68,7 +68,7 @@
   (:action Coger
     :parameters (?j - jugador ?z - zona ?o - objeto)
     :precondition (and (PosJugador ?j ?z) (posObjeto ?o ?z) (manoVacia ?j))
-    :effect (and (not (manoVacia ?j)) (manoLlena ?j ?o) (not posObjeto ?o ?z))
+    :effect (and (not (manoVacia ?j)) (manoLlena ?j ?o) (not (posObjeto ?o ?z)))
   )
 
   ;Dejar objeto
@@ -80,7 +80,7 @@
 
   ;Entregar objeto a personaje
   (:action Entregar
-    :parameters (?j - jugador ?o - objeto ?z - zona ?p - personaje)
+    :parameters (?o - objeto ?p - personaje ?z - zona ?j - jugador)
     :precondition (and (posJugador ?j ?z) (posPersonaje ?p ?z) (manoLlena ?j ?o))
     :effect(and (not (manoLlena ?j ?o)) (manoVacia ?j) (entregado ?p))
   )

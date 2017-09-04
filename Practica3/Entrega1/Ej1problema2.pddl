@@ -14,7 +14,21 @@
 	)
     (:init
       (posJugador jugador1 ZONE_00_00)
-      (atJugador jugador1 este)
+      (atJugador jugador1 sur)
+      (manoVacia jugador1)
+
+      (posPersonaje Principe ZONE_04_00)
+      (posPersonaje Princesa ZONE_04_04)
+      (posPersonaje Bruja ZONE_00_04)
+      (posPersonaje Profesor ZONE_02_02)
+      (posPersonaje LeonardoDiCaprio ZONE_00_01)
+
+      (posObjeto manzana ZONE_02_00)
+      (posObjeto oscar ZONE_02_04)
+      (posObjeto rosa ZONE_04_02)
+      (posObjeto algoritmo ZONE_00_02)
+      (posObjeto oro ZONE_02_03)
+
       ;; CONEXIONES
       (nextZoneInOrientation ZONE_00_00 sur ZONE_01_00)
       (nextZoneInOrientation ZONE_00_00 este ZONE_00_01)
@@ -97,4 +111,11 @@
       (nextZoneInOrientation ZONE_04_04 norte ZONE_03_04)
       (nextZoneInOrientation ZONE_04_04 oeste ZONE_04_03)
 	 )
-    (:goal (AND (hasbananas monkey1))))
+    (:goal (AND (entregado Princesa)
+                (entregado Bruja)
+                (entregado Profesor)
+                (entregado LeonardoDiCaprio)
+                (entregado Principe)
+            )
+    )
+)
