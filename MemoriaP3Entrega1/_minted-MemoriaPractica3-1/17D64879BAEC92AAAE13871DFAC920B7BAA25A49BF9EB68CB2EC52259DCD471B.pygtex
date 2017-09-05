@@ -1,0 +1,11 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{g+go}{      ZONE\PYGZus{}00\PYGZus{}00 ZONE\PYGZus{}00\PYGZus{}01 ZONE\PYGZus{}00\PYGZus{}02 ZONE\PYGZus{}00\PYGZus{}03 ZONE\PYGZus{}00\PYGZus{}04 \PYGZhy{} zona}
+\PYG{g+go}{      ZONE\PYGZus{}01\PYGZus{}00 ZONE\PYGZus{}01\PYGZus{}01 ZONE\PYGZus{}01\PYGZus{}02 ZONE\PYGZus{}01\PYGZus{}03 ZONE\PYGZus{}01\PYGZus{}04 \PYGZhy{} zona}
+\PYG{g+go}{      ZONE\PYGZus{}02\PYGZus{}00 ZONE\PYGZus{}02\PYGZus{}01 ZONE\PYGZus{}02\PYGZus{}02 ZONE\PYGZus{}02\PYGZus{}03 ZONE\PYGZus{}02\PYGZus{}04 \PYGZhy{} zona}
+\PYG{g+go}{      ZONE\PYGZus{}03\PYGZus{}00 ZONE\PYGZus{}03\PYGZus{}01 ZONE\PYGZus{}03\PYGZus{}02 ZONE\PYGZus{}03\PYGZus{}03 ZONE\PYGZus{}03\PYGZus{}04 \PYGZhy{} zona}
+\PYG{g+go}{      ZONE\PYGZus{}04\PYGZus{}00 ZONE\PYGZus{}04\PYGZus{}01 ZONE\PYGZus{}04\PYGZus{}02 ZONE\PYGZus{}04\PYGZus{}03 ZONE\PYGZus{}04\PYGZus{}04 \PYGZhy{} zona}
+\PYG{g+go}{      norte sur este oeste \PYGZhy{} orientacion}
+\PYG{g+go}{      oscar manzana rosa algoritmo oro \PYGZhy{} objeto}
+\PYG{g+go}{      Princesa Principe Bruja Profesor LeonardoDiCaprio \PYGZhy{} personaje}
+\PYG{g+go}{      jugador1 \PYGZhy{} jugador}
+\end{Verbatim}

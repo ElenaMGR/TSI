@@ -1,0 +1,11 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{g+go}{(:action Ir}
+\PYG{g+go}{    :parameters (?j \PYGZhy{} jugador ?o \PYGZhy{} orientacion ?z1 \PYGZhy{} zona ?z2 \PYGZhy{} zona)}
+\PYG{g+go}{    :precondition}
+\PYG{g+go}{    	(and (atJugador ?j ?o) (posJugador ?j ?z1)}
+\PYG{g+go}{    		(nextZoneInOrientation ?z1 ?o ?z2))}
+\PYG{g+go}{    :effect}
+\PYG{g+go}{    	(and (not (posJugador ?j ?z1)) (posJugador ?j ?z2)}
+\PYG{g+go}{    		(increase (camino) (coste ?z1 ?z2)))}
+\PYG{g+go}{  )}
+\end{Verbatim}

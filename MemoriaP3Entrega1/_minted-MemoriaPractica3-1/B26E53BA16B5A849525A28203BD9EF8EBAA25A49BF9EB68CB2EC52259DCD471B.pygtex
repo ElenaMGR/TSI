@@ -1,0 +1,23 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{g+go}{ (:action Ir}
+\PYG{g+go}{    :parameters}
+\PYG{g+go}{    	(?j \PYGZhy{} jugador ?o \PYGZhy{} orientacion ?z1 \PYGZhy{} zona ?z2 \PYGZhy{} zona}
+\PYG{g+go}{    	?t \PYGZhy{} tipoterreno ?m \PYGZhy{} mochila)}
+\PYG{g+go}{    :precondition}
+\PYG{g+go}{      (and}
+\PYG{g+go}{         (atJugador ?j ?o) (posJugador ?j ?z1) (nextZoneInOrientation ?z1 ?o ?z2)}
+\PYG{g+go}{         (isZone ?z2 ?t) (not (= ?t Precipicio))}
+\PYG{g+go}{            (or}
+\PYG{g+go}{               (and (= ?t Bosque)}
+\PYG{g+go}{               	(or (manoLlena ?j zapatillas) (mochilaLlena ?m zapatillas)))}
+\PYG{g+go}{               (and (= ?t Agua)}
+\PYG{g+go}{               	(or (manoLlena ?j bikini) (mochilaLlena ?m bikini)))}
+\PYG{g+go}{               (and (or (= ?t Piedra) (= ?t Arena)))}
+\PYG{g+go}{            )}
+\PYG{g+go}{      )}
+\PYG{g+go}{    :effect}
+\PYG{g+go}{    	(and}
+\PYG{g+go}{    		(not (posJugador ?j ?z1)) (posJugador ?j ?z2)}
+\PYG{g+go}{    		(increase (camino) (coste ?z1 ?z2)))}
+\PYG{g+go}{  )}
+\end{Verbatim}

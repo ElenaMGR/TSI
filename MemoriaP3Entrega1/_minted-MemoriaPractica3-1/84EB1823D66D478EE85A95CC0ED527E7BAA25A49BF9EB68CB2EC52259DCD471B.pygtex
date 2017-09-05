@@ -1,0 +1,28 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{g+go}{;Guardar objeto en la mochila}
+\PYG{g+go}{  (:action Guardar}
+\PYG{g+go}{     :parameters (?j \PYGZhy{} jugador ?m \PYGZhy{} mochila ?o \PYGZhy{} objeto)}
+\PYG{g+go}{     :precondition (and (manoLlena ?j ?o) (\PYGZlt{} (usoMochila) (capacidad ?m)) )}
+\PYG{g+go}{     :effect}
+\PYG{g+go}{      (and}
+\PYG{g+go}{         (mochilaLlena ?m ?o)}
+\PYG{g+go}{         (manoVacia ?j)}
+\PYG{g+go}{         (not (manoLlena ?j ?o))}
+\PYG{g+go}{         (increase (usoMochila) 1)}
+\PYG{g+go}{      )}
+\PYG{g+go}{  )}
+
+
+\PYG{g+go}{  ;Sacar objeto de la mochila}
+\PYG{g+go}{  (:action Sacar}
+\PYG{g+go}{     :parameters (?j \PYGZhy{} jugador ?m \PYGZhy{} mochila ?o \PYGZhy{} objeto)}
+\PYG{g+go}{     :precondition (and (manoVacia ?j) (mochilaLlena ?m ?o) (\PYGZgt{} (usoMochila) 0) )}
+\PYG{g+go}{     :effect}
+\PYG{g+go}{         (and}
+\PYG{g+go}{            (manoLlena ?j ?o)}
+\PYG{g+go}{            (not (manoVacia ?j))}
+\PYG{g+go}{            (decrease (usoMochila) 1)}
+\PYG{g+go}{            (not (mochilaLlena ?m ?o)))}
+\PYG{g+go}{         )}
+\PYG{g+go}{  )}
+\end{Verbatim}

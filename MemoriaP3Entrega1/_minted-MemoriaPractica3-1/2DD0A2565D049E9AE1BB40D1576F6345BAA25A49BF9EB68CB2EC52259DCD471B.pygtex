@@ -1,0 +1,21 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{g+go}{(:action Guardar}
+\PYG{g+go}{  :parameters (?j \PYGZhy{} jugador ?m \PYGZhy{} mochila ?o \PYGZhy{} objeto)}
+\PYG{g+go}{  :precondition (and (mochilaVacia ?m) (manoLlena ?j ?o))}
+\PYG{g+go}{  :effect}
+\PYG{g+go}{    (and}
+\PYG{g+go}{      (not (mochilaVacia ?m)) (mochilaLlena ?m ?o)}
+\PYG{g+go}{      (manoVacia ?j) (not (manoLlena ?j ?o))}
+\PYG{g+go}{    )}
+\PYG{g+go}{)}
+
+\PYG{g+go}{(:action Sacar}
+\PYG{g+go}{  :parameters (?j \PYGZhy{} jugador ?m \PYGZhy{} mochila ?o \PYGZhy{} objeto)}
+\PYG{g+go}{  :precondition (and (manoVacia ?j) (mochilaLlena ?m ?o))}
+\PYG{g+go}{  :effect}
+\PYG{g+go}{    (and}
+\PYG{g+go}{      (manoLlena ?j ?o) (not (manoVacia ?j))}
+\PYG{g+go}{      (not (mochilaLlena ?m ?o)) (mochilaVacia ?m)}
+\PYG{g+go}{    )}
+\PYG{g+go}{)}
+\end{Verbatim}

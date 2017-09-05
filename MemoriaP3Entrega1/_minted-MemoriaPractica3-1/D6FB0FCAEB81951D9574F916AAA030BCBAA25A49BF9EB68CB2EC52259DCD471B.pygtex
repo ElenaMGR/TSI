@@ -1,0 +1,9 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{g+go}{    (:types}
+\PYG{g+go}{    jugador}
+\PYG{g+go}{    orientacion}
+\PYG{g+go}{    personaje}
+\PYG{g+go}{    objeto}
+\PYG{g+go}{    zona}
+\PYG{g+go}{  )}
+\end{Verbatim}

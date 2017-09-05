@@ -1,0 +1,6 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{g+go}{  (:functions}
+\PYG{g+go}{    (camino)}
+\PYG{g+go}{    (coste ?a ?b \PYGZhy{} zona)}
+\PYG{g+go}{  )}
+\end{Verbatim}
