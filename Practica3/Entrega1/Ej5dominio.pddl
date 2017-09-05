@@ -13,10 +13,13 @@
     mochila
   )
 
-  ;Añadir coste
+
   (:functions
     (camino)
     (coste ?a ?b - zona)
+    (puntos)
+    (capacidad ?m - mochila)
+    (usoMochila)
   )
 
   (:predicates
@@ -36,8 +39,6 @@
      (manoLlena ?j - jugador ?o - objeto)
      ;Que un objeto ya haya sido entregado a su personaje
      (entregado ?p - personaje)
-     ;La mochila esta vacía
-     (mochilaVacia ?m - mochila)
      ;La mochila tiene un objeto
      (mochilaLlena ?m - mochila ?o - objeto)
      ;Tipo de terreno
@@ -77,7 +78,7 @@
             (or
                (and (= ?t Bosque) (or (manoLlena ?j zapatillas) (mochilaLlena ?m zapatillas)))
                (and (= ?t Agua) (or (manoLlena ?j bikini) (mochilaLlena ?m bikini)))
-               (and (not (= ?t Agua)) (not (= ?t Bosque)))
+               (and (or (= ?t Piedra) (= ?t Arena)))
             )
       )
     :effect (and (not (posJugador ?j ?z1)) (posJugador ?j ?z2) (increase (camino) (coste ?z1 ?z2)))
@@ -101,21 +102,67 @@
   (:action Entregar
     :parameters (?o - objeto ?p - personaje ?z - zona ?j - jugador)
     :precondition (and (posJugador ?j ?z) (posPersonaje ?p ?z) (manoLlena ?j ?o) (not (= ?o bikini)) (not (= ?o zapatillas)))
-    :effect(and (not (manoLlena ?j ?o)) (manoVacia ?j) (entregado ?p))
+    :effect
+      (and
+         (when (and (= ?p LeonardoDiCaprio) (= ?o oscar)) (increase (puntos) 10))
+         (when (and (= ?p LeonardoDiCaprio) (= ?o rosa)) (increase (puntos) 1))
+         (when (and (= ?p LeonardoDiCaprio) (= ?o manzana)) (increase (puntos) 3))
+         (when (and (= ?p LeonardoDiCaprio) (= ?o algoritmo)) (increase (puntos) 4))
+         (when (and (= ?p LeonardoDiCaprio) (= ?o oro)) (increase (puntos) 5))
+
+         (when (and (= ?p Princesa) (= ?o oscar)) (increase (puntos) 5))
+         (when (and (= ?p Princesa) (= ?o rosa)) (increase (puntos) 10))
+         (when (and (= ?p Princesa) (= ?o manzana)) (increase (puntos) 1))
+         (when (and (= ?p Princesa) (= ?o algoritmo)) (increase (puntos) 3))
+         (when (and (= ?p Princesa) (= ?o oro)) (increase (puntos) 4))
+
+         (when (and (= ?p Bruja) (= ?o oscar)) (increase (puntos) 4))
+         (when (and (= ?p Bruja) (= ?o rosa)) (increase (puntos) 5))
+         (when (and (= ?p Bruja) (= ?o manzana)) (increase (puntos) 10))
+         (when (and (= ?p Bruja) (= ?o algoritmo)) (increase (puntos) 1))
+         (when (and (= ?p Bruja) (= ?o oro)) (increase (puntos) 3))
+
+         (when (and (= ?p Profesor) (= ?o oscar)) (increase (puntos) 3))
+         (when (and (= ?p Profesor) (= ?o rosa)) (increase (puntos) 4))
+         (when (and (= ?p Profesor) (= ?o manzana)) (increase (puntos) 5))
+         (when (and (= ?p Profesor) (= ?o algoritmo)) (increase (puntos) 10))
+         (when (and (= ?p Profesor) (= ?o oro)) (increase (puntos) 1))
+
+         (when (and (= ?p Principe) (= ?o oscar)) (increase (puntos) 1))
+         (when (and (= ?p Principe) (= ?o rosa)) (increase (puntos) 3))
+         (when (and (= ?p Principe) (= ?o manzana)) (increase (puntos) 4))
+         (when (and (= ?p Principe) (= ?o algoritmo)) (increase (puntos) 5))
+         (when (and (= ?p Principe) (= ?o oro)) (increase (puntos) 10))
+
+         (not (manoLlena ?j ?o)) (manoVacia ?j) (entregado ?p)
+      )
   )
 
   ;Guardar objeto en la mochila
   (:action Guardar
      :parameters (?j - jugador ?m - mochila ?o - objeto)
-     :precondition (and (mochilaVacia ?m) (manoLlena ?j ?o))
-     :effect (and (not (mochilaVacia ?m)) (mochilaLlena ?m ?o) (manoVacia ?j) (not (manoLlena ?j ?o)))
+     :precondition (and (manoLlena ?j ?o) (< (usoMochila) (capacidad ?m)) )
+     :effect
+      (and
+         (mochilaLlena ?m ?o)
+         (manoVacia ?j)
+         (not (manoLlena ?j ?o))
+         (increase (usoMochila) 1)
+      )
   )
+
 
   ;Sacar objeto de la mochila
   (:action Sacar
      :parameters (?j - jugador ?m - mochila ?o - objeto)
-     :precondition (and (manoVacia ?j) (mochilaLlena ?m ?o))
-     :effect (and (manoLlena ?j ?o) (not (manoVacia ?j)) (not (mochilaLlena ?m ?o)) (mochilaVacia ?m))
+     :precondition (and (manoVacia ?j) (mochilaLlena ?m ?o) (> (usoMochila) 0) )
+     :effect
+         (and
+            (manoLlena ?j ?o)
+            (not (manoVacia ?j))
+            (decrease (usoMochila) 1)
+            (not (mochilaLlena ?m ?o))
+         )
   )
 
 )

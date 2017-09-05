@@ -17,6 +17,7 @@
   (:functions
     (camino)
     (coste ?a ?b - zona)
+    (puntos)
   )
 
   (:predicates
@@ -77,7 +78,7 @@
             (or
                (and (= ?t Bosque) (or (manoLlena ?j zapatillas) (mochilaLlena ?m zapatillas)))
                (and (= ?t Agua) (or (manoLlena ?j bikini) (mochilaLlena ?m bikini)))
-               (and (not (= ?t Agua)) (not (= ?t Bosque)))
+               (and (or (= ?t Piedra) (= ?t Arena)))
             )
       )
     :effect (and (not (posJugador ?j ?z1)) (posJugador ?j ?z2) (increase (camino) (coste ?z1 ?z2)))
@@ -101,7 +102,40 @@
   (:action Entregar
     :parameters (?o - objeto ?p - personaje ?z - zona ?j - jugador)
     :precondition (and (posJugador ?j ?z) (posPersonaje ?p ?z) (manoLlena ?j ?o) (not (= ?o bikini)) (not (= ?o zapatillas)))
-    :effect(and (not (manoLlena ?j ?o)) (manoVacia ?j) (entregado ?p))
+    :effect
+      (and
+         (when (and (= ?p LeonardoDiCaprio) (= ?o oscar)) (increase (puntos) 10))
+         (when (and (= ?p LeonardoDiCaprio) (= ?o rosa)) (increase (puntos) 1))
+         (when (and (= ?p LeonardoDiCaprio) (= ?o manzana)) (increase (puntos) 3))
+         (when (and (= ?p LeonardoDiCaprio) (= ?o algoritmo)) (increase (puntos) 4))
+         (when (and (= ?p LeonardoDiCaprio) (= ?o oro)) (increase (puntos) 5))
+
+         (when (and (= ?p Princesa) (= ?o oscar)) (increase (puntos) 5))
+         (when (and (= ?p Princesa) (= ?o rosa)) (increase (puntos) 10))
+         (when (and (= ?p Princesa) (= ?o manzana)) (increase (puntos) 1))
+         (when (and (= ?p Princesa) (= ?o algoritmo)) (increase (puntos) 3))
+         (when (and (= ?p Princesa) (= ?o oro)) (increase (puntos) 4))
+
+         (when (and (= ?p Bruja) (= ?o oscar)) (increase (puntos) 4))
+         (when (and (= ?p Bruja) (= ?o rosa)) (increase (puntos) 5))
+         (when (and (= ?p Bruja) (= ?o manzana)) (increase (puntos) 10))
+         (when (and (= ?p Bruja) (= ?o algoritmo)) (increase (puntos) 1))
+         (when (and (= ?p Bruja) (= ?o oro)) (increase (puntos) 3))
+
+         (when (and (= ?p Profesor) (= ?o oscar)) (increase (puntos) 3))
+         (when (and (= ?p Profesor) (= ?o rosa)) (increase (puntos) 4))
+         (when (and (= ?p Profesor) (= ?o manzana)) (increase (puntos) 5))
+         (when (and (= ?p Profesor) (= ?o algoritmo)) (increase (puntos) 10))
+         (when (and (= ?p Profesor) (= ?o oro)) (increase (puntos) 1))
+
+         (when (and (= ?p Principe) (= ?o oscar)) (increase (puntos) 1))
+         (when (and (= ?p Principe) (= ?o rosa)) (increase (puntos) 3))
+         (when (and (= ?p Principe) (= ?o manzana)) (increase (puntos) 4))
+         (when (and (= ?p Principe) (= ?o algoritmo)) (increase (puntos) 5))
+         (when (and (= ?p Principe) (= ?o oro)) (increase (puntos) 10))
+
+         (not (manoLlena ?j ?o)) (manoVacia ?j) (entregado ?p)
+      )
   )
 
   ;Guardar objeto en la mochila
