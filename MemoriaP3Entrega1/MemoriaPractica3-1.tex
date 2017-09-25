@@ -430,7 +430,7 @@ Para el problema he añadido los terrenos y los nuevos objetos bikini y zapatill
 	\caption{Mapa problema ejercicio 3}
 \end{figure}
 
-El plan lo he realizado con objetivo entregar a la princesa y al príncipe, ya que si pongo como objetivo entregar a los 5 personajes tarda mucho la ejecución. De esta forma se puede ver el correcto funcionamiento ya que la princesa está en zona de agua y por lo tanto es necesario el bikini, y el príncipe está rodeado de bosque y son necesarias las zapatillas para poder entregarle un objeto.
+El plan lo he realizado con objetivo entregar a la princesa y al príncipe, ya que si pongo como objetivo entregar a los 5 personajes tarda mucho la ejecución. De esta forma se puede ver el correcto funcionamiento ya que la princesa está en zona de agua y por lo tanto es necesario el bikini, y el príncipe está rodeado de bosque y son necesarias las zapatillas para poder entregarle un objeto. Utilizo el mismo mapa que en el ejercicio anterior.
 
 \begin{minted}{console}
 acciones:   57   coste actual:   92.00    coste estimado:   92.00    tiempo:    8.85
@@ -518,14 +518,53 @@ Se puede apreciar como solo va a una zona de agua cuando tiene el bikini o a una
 
 \textbf{a) Modificar el dominio para poder registrar los puntos acumulados por el agente, mediante una función, cada vez que entrega un objeto a un personaje (una función PDDL puede tener dos argumentos).}\\
 
-Para guardar los puntos acumulados creamos una nueva función \texttt{(puntos ?j - jugador)} en el dominio.\\
+Para guardar los puntos acumulados creamos una nueva función \texttt{(puntos)} en el dominio, y para guardar los puntos correspondientes a la entrega de cada objeto a un personaje creamos la función \texttt{(puntosPersonaje ?p - personaje ?o - objeto)}.\\
 
 \textbf{b) Extender el problema del anterior ejercicio para que, por un lado, se pueda representar la tabla anterior y, además, partiendo de 0 puntos el jugador pueda alcanzar al menos una cantidad arbitraria de puntos (indicándolo en el objetivo), sin especificar a qué personajes hay que entregar objetos. Por ejemplo, plantear un problema en el que con solo objetos de tipo oscar y manzana el jugador pueda alcanzar 50 puntos (asumiendo que solo están los 5 personajes).}\\
 
-Para representar la tabla anterior se ha añadido en la acción \texttt{Entregar} el incremento de la función \texttt{puntos} dependiendo del objeto y a que personaje se lo entregues, por ejemplo, si se le entrega la rosa a la princesa: \\
-\texttt{(when (and (= ?p Princesa) (= ?o rosa)) (increase (puntos) 10))}
+Para representar la tabla anterior se ha añadido en el problema todos los puntos correspondientes a la tabla de la siguiente forma: \texttt{(= (puntosPersonaje LeonardoDiCaprio oscar) 10)}. En la acción \texttt{Entregar} el incremento de la función \texttt{puntos} dependiendo del objeto y a que personaje se lo entregues:
+\texttt{(increase (puntos) (puntosPersonaje ?p ?o))}
 
-En el problema añadimos que partimos de 0 puntos al iniciar \texttt{(= (puntos) 0)} y en el goal ponemos \texttt{(AND (= (puntos) 50))} para cambiar el objetivo del problema.
+En el problema añadimos que partimos de 0 puntos al iniciar \texttt{(= (puntos) 0)} y en el goal ponemos \texttt{(AND (= (puntos) 50))} para cambiar el objetivo del problema.\\
+
+El siguiente plan es de obtener 18 puntos, pudiendo entregar varios objetos al mismo personaje, utilizando el mismo mapa que en el ejercicio 3.
+\begin{minted}{console}
+ff: found legal plan as follows
+
+step    0: IR JUGADOR1 ESTE ZONE_00_00 ZONE_00_01 PIEDRA MOCHILA
+        1: GIRARDERECHA JUGADOR1 ESTE
+        2: IR JUGADOR1 SUR ZONE_00_01 ZONE_01_01 ARENA MOCHILA
+        3: GIRARIZQUIERDA JUGADOR1 SUR
+        4: COGER JUGADOR1 ZONE_01_01 ORO
+        5: IR JUGADOR1 ESTE ZONE_01_01 ZONE_01_02 PIEDRA MOCHILA
+        6: DEJAR JUGADOR1 ZONE_01_02 ORO
+        7: GIRARDERECHA JUGADOR1 ESTE
+        8: COGER JUGADOR1 ZONE_01_02 BIKINI
+        9: GUARDAR JUGADOR1 MOCHILA BIKINI
+       10: COGER JUGADOR1 ZONE_01_02 ORO
+       11: IR JUGADOR1 SUR ZONE_01_02 ZONE_02_02 AGUA MOCHILA
+       12: GIRARIZQUIERDA JUGADOR1 SUR
+       13: DEJAR JUGADOR1 ZONE_02_02 ORO
+       14: GIRARIZQUIERDA JUGADOR1 ESTE
+       15: IR JUGADOR1 NORTE ZONE_02_02 ZONE_01_02 PIEDRA MOCHILA
+       16: IR JUGADOR1 NORTE ZONE_01_02 ZONE_00_02 PIEDRA MOCHILA
+       17: COGER JUGADOR1 ZONE_00_02 OSCAR
+       18: GIRARDERECHA JUGADOR1 NORTE
+       19: IR JUGADOR1 ESTE ZONE_00_02 ZONE_00_03 ARENA MOCHILA
+       20: IR JUGADOR1 ESTE ZONE_00_03 ZONE_00_04 ARENA MOCHILA
+       21: GIRARDERECHA JUGADOR1 ESTE
+       22: ENTREGAR OSCAR LEONARDODICAPRIO ZONE_00_04 JUGADOR1
+       23: IR JUGADOR1 SUR ZONE_00_04 ZONE_01_04 AGUA MOCHILA
+       24: IR JUGADOR1 SUR ZONE_01_04 ZONE_02_04 AGUA MOCHILA
+       25: GIRARDERECHA JUGADOR1 SUR
+       26: IR JUGADOR1 OESTE ZONE_02_04 ZONE_02_03 AGUA MOCHILA
+       27: COGER JUGADOR1 ZONE_02_03 ROSA
+       28: IR JUGADOR1 OESTE ZONE_02_03 ZONE_02_02 AGUA MOCHILA
+       29: ENTREGAR ROSA BRUJA ZONE_02_02 JUGADOR1
+       30: COGER JUGADOR1 ZONE_02_02 ORO
+       31: ENTREGAR ORO BRUJA ZONE_02_02 JUGADOR1
+
+\end{minted}
 
 \section{Ejercicio 5}\textbf{Considerar ahora que el jugador tiene una mochila con una capacidad n $>$ 1, (configurable en el estado inicial).}\\
 
@@ -619,22 +658,169 @@ step    0: IR JUGADOR1 ESTE ZONE_00_00 ZONE_00_01 PIEDRA MOCHILA
 
 \end{minted}
 
+El siguiente plan es de conseguir 18 puntos, en el ejercicio anterior necesitó 31 pasos para llegar al objetivo, en cambio en este con una mochila de capacidad 5 ha necesitado 26 pasos.
+\begin{minted}{console}
+ff: found legal plan as follows
+
+step    0: IR JUGADOR1 ESTE ZONE_00_00 ZONE_00_01 PIEDRA MOCHILA
+        1: GIRARDERECHA JUGADOR1 ESTE
+        2: IR JUGADOR1 SUR ZONE_00_01 ZONE_01_01 ARENA MOCHILA
+        3: GIRARIZQUIERDA JUGADOR1 SUR
+        4: COGER JUGADOR1 ZONE_01_01 ORO
+        5: IR JUGADOR1 ESTE ZONE_01_01 ZONE_01_02 PIEDRA MOCHILA
+        6: GIRARIZQUIERDA JUGADOR1 ESTE
+        7: GUARDAR JUGADOR1 MOCHILA ORO
+        8: COGER JUGADOR1 ZONE_01_02 BIKINI
+        9: IR JUGADOR1 NORTE ZONE_01_02 ZONE_00_02 PIEDRA MOCHILA
+       10: GUARDAR JUGADOR1 MOCHILA BIKINI
+       11: COGER JUGADOR1 ZONE_00_02 OSCAR
+       12: GIRARDERECHA JUGADOR1 NORTE
+       13: GIRARDERECHA JUGADOR1 ESTE
+       14: IR JUGADOR1 SUR ZONE_00_02 ZONE_01_02 PIEDRA MOCHILA
+       15: IR JUGADOR1 SUR ZONE_01_02 ZONE_02_02 AGUA MOCHILA
+       16: ENTREGAR OSCAR BRUJA ZONE_02_02 JUGADOR1
+       17: GIRARIZQUIERDA JUGADOR1 SUR
+       18: IR JUGADOR1 ESTE ZONE_02_02 ZONE_02_03 AGUA MOCHILA
+       19: COGER JUGADOR1 ZONE_02_03 ROSA
+       20: IR JUGADOR1 ESTE ZONE_02_03 ZONE_02_04 AGUA MOCHILA
+       21: GIRARIZQUIERDA JUGADOR1 ESTE
+       22: IR JUGADOR1 NORTE ZONE_02_04 ZONE_01_04 AGUA MOCHILA
+       23: GIRARIZQUIERDA JUGADOR1 NORTE
+       24: ENTREGAR ROSA PRINCESA ZONE_01_04 JUGADOR1
+       25: SACAR JUGADOR1 MOCHILA ORO
+       26: ENTREGAR ORO PRINCESA ZONE_01_04 JUGADOR1
+
+\end{minted}
+
 
 \section{Ejercicio 6} \textbf{Con el dominio definido en el anterior ejercicio definir 3 problemas con
 distintas capacidades de la mochila y con distinto número de objetos a entregar, de
 forma que el planificador encuentre un plan para ellos maximizando el número de
-puntos a conseguir.}
+puntos a conseguir.}\\
+
+Para este ejercicio utilizo el mismo dominio del ejercicio 5 ``Ej5dominio.pddl'' y creo 3 nuevos archivos ``Ej6problema1.pddl'', ``Ej6problema2.pddl'' y ``Ej6problema3.pddl''.\\
+
+El mapa que voy a utilizar para los dos primero problemas en este ejercicio es el siguiente:
 
 
+\begin{figure}[H] 
+	\centering
+	\includegraphics[width=15cm]{Ej6_1.png}
+	\caption{Mapa problema ejercicio 6}
+\end{figure}
+
+En el primer problema utilizo una mochila de capacidad 2 y utilizo 2 objetos a entregar el oro y el algoritmo, el plan resultante es el siguiente:
+\begin{minted}{console}
+ff: found legal plan as follows
+
+step    0: IR JUGADOR1 ESTE ZONE_00_00 ZONE_00_01 PIEDRA MOCHILA
+        1: GIRARDERECHA JUGADOR1 ESTE
+        2: IR JUGADOR1 SUR ZONE_00_01 ZONE_01_01 ARENA MOCHILA
+        3: GIRARIZQUIERDA JUGADOR1 SUR
+        4: COGER JUGADOR1 ZONE_01_01 ORO
+        5: IR JUGADOR1 ESTE ZONE_01_01 ZONE_01_02 PIEDRA MOCHILA
+        6: GUARDAR JUGADOR1 MOCHILA ORO
+        7: COGER JUGADOR1 ZONE_01_02 BIKINI
+        8: IR JUGADOR1 ESTE ZONE_01_02 ZONE_01_03 PIEDRA MOCHILA
+        9: IR JUGADOR1 ESTE ZONE_01_03 ZONE_01_04 AGUA MOCHILA
+       10: DEJAR JUGADOR1 ZONE_01_04 BIKINI
+       11: SACAR JUGADOR1 MOCHILA ORO
+       12: GIRARIZQUIERDA JUGADOR1 ESTE
+       13: GIRARIZQUIERDA JUGADOR1 NORTE
+       14: ENTREGAR ORO PRINCIPE ZONE_01_04 JUGADOR1
+       15: IR JUGADOR1 OESTE ZONE_01_04 ZONE_01_03 PIEDRA MOCHILA
+       16: COGER JUGADOR1 ZONE_01_03 ALGORITMO
+       17: IR JUGADOR1 OESTE ZONE_01_03 ZONE_01_02 PIEDRA MOCHILA
+       18: GIRARDERECHA JUGADOR1 OESTE
+       19: IR JUGADOR1 NORTE ZONE_01_02 ZONE_00_02 PIEDRA MOCHILA
+       20: ENTREGAR ALGORITMO PROFESOR ZONE_00_02 JUGADOR1
+
+\end{minted}
 
 
+Para el segundo problema utilizo una mochila de capacidad 3 y 3 objetos.
 
+\begin{minted}{console}
+ff: found legal plan as follows
 
+step    0: IR JUGADOR1 ESTE ZONE_00_00 ZONE_00_01 PIEDRA MOCHILA
+        1: IR JUGADOR1 ESTE ZONE_00_01 ZONE_00_02 PIEDRA MOCHILA
+        2: IR JUGADOR1 ESTE ZONE_00_02 ZONE_00_03 ARENA MOCHILA
+        3: GIRARDERECHA JUGADOR1 ESTE
+        4: IR JUGADOR1 SUR ZONE_00_03 ZONE_01_03 PIEDRA MOCHILA
+        5: GIRARDERECHA JUGADOR1 SUR
+        6: GIRARDERECHA JUGADOR1 OESTE
+        7: COGER JUGADOR1 ZONE_01_03 ALGORITMO
+        8: IR JUGADOR1 NORTE ZONE_01_03 ZONE_00_03 ARENA MOCHILA
+        9: DEJAR JUGADOR1 ZONE_00_03 ALGORITMO
+       10: COGER JUGADOR1 ZONE_00_03 ZAPATILLAS
+       11: GUARDAR JUGADOR1 MOCHILA ZAPATILLAS
+       12: COGER JUGADOR1 ZONE_00_03 ALGORITMO
+       13: GIRARIZQUIERDA JUGADOR1 NORTE
+       14: IR JUGADOR1 OESTE ZONE_00_03 ZONE_00_02 PIEDRA MOCHILA
+       15: ENTREGAR ALGORITMO PROFESOR ZONE_00_02 JUGADOR1
+       16: IR JUGADOR1 OESTE ZONE_00_02 ZONE_00_01 PIEDRA MOCHILA
+       17: IR JUGADOR1 OESTE ZONE_00_01 ZONE_00_00 ARENA MOCHILA
+       18: GIRARIZQUIERDA JUGADOR1 OESTE
+       19: IR JUGADOR1 SUR ZONE_00_00 ZONE_01_00 PIEDRA MOCHILA
+       20: IR JUGADOR1 SUR ZONE_01_00 ZONE_02_00 PIEDRA MOCHILA
+       21: IR JUGADOR1 SUR ZONE_02_00 ZONE_03_00 BOSQUE MOCHILA
+       22: COGER JUGADOR1 ZONE_03_00 MANZANA
+       23: GIRARIZQUIERDA JUGADOR1 SUR
+       24: IR JUGADOR1 ESTE ZONE_03_00 ZONE_03_01 BOSQUE MOCHILA
+       25: ENTREGAR MANZANA BRUJA ZONE_03_01 JUGADOR1
+       26: IR JUGADOR1 ESTE ZONE_03_01 ZONE_03_02 PIEDRA MOCHILA
+       27: GIRARDERECHA JUGADOR1 ESTE
+       28: IR JUGADOR1 SUR ZONE_03_02 ZONE_04_02 BOSQUE MOCHILA
+       29: COGER JUGADOR1 ZONE_04_02 OSCAR
+       30: GIRARIZQUIERDA JUGADOR1 SUR
+       31: IR JUGADOR1 ESTE ZONE_04_02 ZONE_04_03 ARENA MOCHILA
+       32: ENTREGAR OSCAR LEONARDODICAPRIO ZONE_04_03 JUGADOR1
+\end{minted}
 
+Para el último problema utilizo el mapa del ejercicio 3 con una mochila de capacidad 5 y entrego 3 objetos.
 
+\begin{minted}{console}
+ff: found legal plan as follows
 
+step    0: IR JUGADOR1 ESTE ZONE_00_00 ZONE_00_01 PIEDRA MOCHILA
+        1: IR JUGADOR1 ESTE ZONE_00_01 ZONE_00_02 PIEDRA MOCHILA
+        2: COGER JUGADOR1 ZONE_00_02 OSCAR
+        3: IR JUGADOR1 ESTE ZONE_00_02 ZONE_00_03 ARENA MOCHILA
+        4: IR JUGADOR1 ESTE ZONE_00_03 ZONE_00_04 ARENA MOCHILA
+        5: GIRARIZQUIERDA JUGADOR1 ESTE
+        6: GIRARIZQUIERDA JUGADOR1 NORTE
+        7: ENTREGAR OSCAR LEONARDODICAPRIO ZONE_00_04 JUGADOR1
+        8: IR JUGADOR1 OESTE ZONE_00_04 ZONE_00_03 ARENA MOCHILA
+        9: COGER JUGADOR1 ZONE_00_03 ZAPATILLAS
+       10: IR JUGADOR1 OESTE ZONE_00_03 ZONE_00_02 PIEDRA MOCHILA
+       11: GUARDAR JUGADOR1 MOCHILA ZAPATILLAS
+       12: GIRARIZQUIERDA JUGADOR1 OESTE
+       13: IR JUGADOR1 SUR ZONE_00_02 ZONE_01_02 PIEDRA MOCHILA
+       14: COGER JUGADOR1 ZONE_01_02 BIKINI
+       15: IR JUGADOR1 SUR ZONE_01_02 ZONE_02_02 AGUA MOCHILA
+       16: GUARDAR JUGADOR1 MOCHILA BIKINI
+       17: IR JUGADOR1 SUR ZONE_02_02 ZONE_03_02 PIEDRA MOCHILA
+       18: GIRARDERECHA JUGADOR1 SUR
+       19: IR JUGADOR1 OESTE ZONE_03_02 ZONE_03_01 BOSQUE MOCHILA
+       20: IR JUGADOR1 OESTE ZONE_03_01 ZONE_03_00 BOSQUE MOCHILA
+       21: GIRARDERECHA JUGADOR1 OESTE
+       22: COGER JUGADOR1 ZONE_03_00 MANZANA
+       23: GIRARDERECHA JUGADOR1 NORTE
+       24: IR JUGADOR1 ESTE ZONE_03_00 ZONE_03_01 BOSQUE MOCHILA
+       25: IR JUGADOR1 ESTE ZONE_03_01 ZONE_03_02 PIEDRA MOCHILA
+       26: GIRARIZQUIERDA JUGADOR1 ESTE
+       27: IR JUGADOR1 NORTE ZONE_03_02 ZONE_02_02 AGUA MOCHILA
+       28: GIRARDERECHA JUGADOR1 NORTE
+       29: ENTREGAR MANZANA BRUJA ZONE_02_02 JUGADOR1
+       30: IR JUGADOR1 ESTE ZONE_02_02 ZONE_02_03 AGUA MOCHILA
+       31: COGER JUGADOR1 ZONE_02_03 ROSA
+       32: IR JUGADOR1 ESTE ZONE_02_03 ZONE_02_04 AGUA MOCHILA
+       33: GIRARIZQUIERDA JUGADOR1 ESTE
+       34: IR JUGADOR1 NORTE ZONE_02_04 ZONE_01_04 AGUA MOCHILA
+       35: ENTREGAR ROSA PRINCESA ZONE_01_04 JUGADOR1
 
-
+\end{minted}
 
 
 \end{document}

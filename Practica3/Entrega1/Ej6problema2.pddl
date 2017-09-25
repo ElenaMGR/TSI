@@ -7,7 +7,7 @@
       ZONE_03_00 ZONE_03_01 ZONE_03_02 ZONE_03_03 ZONE_03_04 - zona
       ZONE_04_00 ZONE_04_01 ZONE_04_02 ZONE_04_03 ZONE_04_04 - zona
       norte sur este oeste - orientacion
-      oscar manzana rosa algoritmo oro zapatillas bikini - objeto
+      oscar rosa manzana algoritmo oro zapatillas bikini - objeto
       Princesa Principe Bruja Profesor LeonardoDiCaprio - personaje
       jugador1 - jugador
       Arena Piedra Agua Bosque Precipicio - tipoterreno
@@ -18,16 +18,16 @@
       (atJugador jugador1 este)
       (manoVacia jugador1)
 
-      (posPersonaje Principe ZONE_04_01)
-      (posPersonaje Princesa ZONE_01_04)
-      (posPersonaje Bruja ZONE_02_02)
-      (posPersonaje Profesor ZONE_01_00)
-      (posPersonaje LeonardoDiCaprio ZONE_00_04)
+      (posPersonaje Principe ZONE_01_04)
+      (posPersonaje Princesa ZONE_02_00)
+      (posPersonaje Bruja ZONE_03_01)
+      (posPersonaje Profesor ZONE_00_02)
+      (posPersonaje LeonardoDiCaprio ZONE_04_03)
 
       (posObjeto manzana ZONE_03_00)
-      (posObjeto oscar ZONE_00_02)
-      (posObjeto rosa ZONE_02_03)
-      (posObjeto algoritmo ZONE_04_04)
+      (posObjeto oscar ZONE_04_02)
+      (posObjeto rosa ZONE_03_03)
+      (posObjeto algoritmo ZONE_01_03)
       (posObjeto oro ZONE_01_01)
       (posObjeto zapatillas ZONE_00_03)
       (posObjeto bikini ZONE_01_02)
@@ -37,14 +37,14 @@
       (isZone ZONE_00_01 Piedra)
       (isZone ZONE_00_02 Piedra)
       (isZone ZONE_00_03 Arena)
-      (isZone ZONE_00_04 Arena)
+      (isZone ZONE_00_04 Precipicio)
       (isZone ZONE_01_00 Piedra)
       (isZone ZONE_01_01 Arena)
       (isZone ZONE_01_02 Piedra)
       (isZone ZONE_01_03 Piedra)
       (isZone ZONE_01_04 Agua)
       (isZone ZONE_02_00 Piedra)
-      (isZone ZONE_02_01 Precipicio)
+      (isZone ZONE_02_01 Agua)
       (isZone ZONE_02_02 Agua)
       (isZone ZONE_02_03 Agua)
       (isZone ZONE_02_04 Agua)
@@ -53,11 +53,11 @@
       (isZone ZONE_03_02 Piedra)
       (isZone ZONE_03_03 Bosque)
       (isZone ZONE_03_04 Agua)
-      (isZone ZONE_04_00 Piedra)
+      (isZone ZONE_04_00 Precipicio)
       (isZone ZONE_04_01 Arena)
       (isZone ZONE_04_02 Bosque)
-      (isZone ZONE_04_03 Precipicio)
-      (isZone ZONE_04_04 Bosque)
+      (isZone ZONE_04_03 Arena)
+      (isZone ZONE_04_04 Precipicio)
 
       ;; CONEXIONES
       (nextZoneInOrientation ZONE_00_00 sur ZONE_01_00)
@@ -256,9 +256,11 @@
       (= (puntosPersonaje Principe algoritmo) 5)
       (= (puntosPersonaje Principe oro) 10)
 
-      (= (capacidad mochila) 5)
+      (= (capacidad mochila) 3)
       (= (usoMochila) 0)
 	 )
-    ;(:metric maximize (puntos))
-    (:goal (AND (= (puntos) 18)))
+
+    (:metric maximize (puntos))
+    (:goal (AND (= (puntos) 30))
+    )
 )

@@ -226,6 +226,36 @@
 
       (= (camino) 0)
       (= (puntos) 0)
+
+      (= (puntosPersonaje LeonardoDiCaprio oscar) 10)
+      (= (puntosPersonaje LeonardoDiCaprio rosa) 1)
+      (= (puntosPersonaje LeonardoDiCaprio manzana) 3)
+      (= (puntosPersonaje LeonardoDiCaprio algoritmo) 4)
+      (= (puntosPersonaje LeonardoDiCaprio oro) 5)
+
+      (= (puntosPersonaje Princesa oscar) 5)
+      (= (puntosPersonaje Princesa rosa) 10)
+      (= (puntosPersonaje Princesa manzana) 1)
+      (= (puntosPersonaje Princesa algoritmo) 3)
+      (= (puntosPersonaje Princesa oro) 4)
+
+      (= (puntosPersonaje Bruja oscar) 4)
+      (= (puntosPersonaje Bruja rosa) 5)
+      (= (puntosPersonaje Bruja manzana) 10)
+      (= (puntosPersonaje Bruja algoritmo) 1)
+      (= (puntosPersonaje Bruja oro) 3)
+
+      (= (puntosPersonaje Profesor oscar) 3)
+      (= (puntosPersonaje Profesor rosa) 4)
+      (= (puntosPersonaje Profesor manzana) 5)
+      (= (puntosPersonaje Profesor algoritmo) 10)
+      (= (puntosPersonaje Profesor oro) 1)
+
+      (= (puntosPersonaje Principe oscar) 1)
+      (= (puntosPersonaje Principe rosa) 3)
+      (= (puntosPersonaje Principe manzana) 4)
+      (= (puntosPersonaje Principe algoritmo) 5)
+      (= (puntosPersonaje Principe oro) 10)
 	 )
     ;(:metric maximize (puntos))
     (:goal (AND (= (puntos) 50)))

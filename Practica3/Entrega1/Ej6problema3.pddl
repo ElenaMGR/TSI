@@ -7,7 +7,7 @@
       ZONE_03_00 ZONE_03_01 ZONE_03_02 ZONE_03_03 ZONE_03_04 - zona
       ZONE_04_00 ZONE_04_01 ZONE_04_02 ZONE_04_03 ZONE_04_04 - zona
       norte sur este oeste - orientacion
-      oscar manzana rosa algoritmo oro zapatillas bikini - objeto
+      oscar rosa manzana algoritmo oro zapatillas bikini - objeto
       Princesa Principe Bruja Profesor LeonardoDiCaprio - personaje
       jugador1 - jugador
       Arena Piedra Agua Bosque Precipicio - tipoterreno
@@ -256,9 +256,11 @@
       (= (puntosPersonaje Principe algoritmo) 5)
       (= (puntosPersonaje Principe oro) 10)
 
-      (= (capacidad mochila) 5)
+      (= (capacidad mochila) 1)
       (= (usoMochila) 0)
 	 )
+
     ;(:metric maximize (puntos))
-    (:goal (AND (= (puntos) 18)))
+    (:goal (AND (= (puntos) 30))
+    )
 )
